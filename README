@@ -1,0 +1,8 @@
+ABOUT:
+This work allows users to add/receive IOU's from others regarding debt as either a monetary or non-monetary value.
+
+This is in its VERY EARLY STAGES.  Please note you will need to modify backend/mysqli.php to add username/password/database info.
+
+
+LICENCE:
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License. To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 444 Castro Street, Suite 900, Mountain View, California, 94041, USA.
