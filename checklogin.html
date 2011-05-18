@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" href="css/green.css">
+	<script src="js/jquery.js"></script>
+	<style>
+		.loadball {
+			width: 10px;
+			height: 10px;
+			background-color: #80C247;
+			border-radius: 5px;
+		}
+		
+		.floatleft {
+			float: left;
+		}
+		
+		.floatright {
+			float: right;
+		}
+		
+		.loader {
+			width: 50px;
+			height: 10px;
+			position: absolute;
+			-webkit-transition: all 100s linear;
+			-moz-transition: all 100s linear;
+			-o-transition: all 100s linear;
+			position: relative;
+			top: -40px;
+			left: -10px;
+		}
+		
+		#loading2 {
+			opacity: 0.6;
+			
+			-webkit-transition: all 100s linear 75ms;
+			-moz-transition: all 100s linear 75ms;
+			-o-transition: all 100s linear 75ms;
+			top: -50px;
+		}
+		
+		#loading3 {
+			opacity: 0.4;
+			
+			-webkit-transition: all 100s linear 150ms;
+			-moz-transition: all 100s linear 150ms;
+			-o-transition: all 100s linear 150ms;
+			top: -60px;
+		}
+		
+		h1 {
+			margin-left: 70px;
+		}
+		
+		h2 {
+			margin-left: 70px;
+		}
+	</style>
+	<script>
+		var accesstoken = "";
+		
+		function start_session(user) {
+			localStorage["token"] = accesstoken;
+			localStorage["id"] = user.id;
+			localStorage["username"] = user.name;
+			$.get("./startsession.php",
+			{
+				"accesstoken":accesstoken,
+				"id":user.id,
+				"username":user.name,
+				"firstname":user.first_name,
+				"lastname":user.last_name
+			}).success(function(a,b,c) {
+				opener.location.reload(true);
+				window.close();
+			});
+		}
+		$(document).ready(function() {			
+			var h = window.location.hash;
+			
+			if (h.length==0) {
+				$(".loader").css("display","none");
+				$("#dashboard h1").css("margin-left","0px");
+				$("#dashboard h2").css("margin-left","0px");
+				$("#dashboard").find("h1").html("Sorry");
+				$("#dashboard").find("h2").html("You pressed Do Not Allow :(");
+				setTimeout("window.close()",3000);
+				return;
+			} else {
+				$("#dashboard h1").html("Thank you");
+				$("#dashboard h2").html("Please wait.");
+				
+				$(".loader").click(function() {
+					$(this).css("-webkit-transform","rotate(36000deg)");
+					$(this).css("-moz-transform","rotate(36000deg)");
+					$(this).css("-o-transform","rotate(36000deg)");
+				}).click();
+				
+				accesstoken = window.location.hash;
+				var end = accesstoken.search("&expires_in=");
+				accesstoken = accesstoken.substr(14,end-14);
+				var path = "https://graph.facebook.com/me?"+window.location.hash.substr(1)+"&callback=start_session";
+				
+				$("head").append($("<script/>").attr("src",path).get());
+			}
+		});
+	</script>
+</head>
+<body>
+	<div id="dashboard">
+	<h1></h1>
+	<h2></h2>
+	<div class='loader' id='loading1'><div class='loadball floatleft'></div><div class='loadball floatright'></div></div>
+	<div class='loader' id='loading2'><div class='loadball floatleft'></div><div class='loadball floatright'></div></div>
+	<div class='loader' id='loading3'><div class='loadball floatleft'></div><div class='loadball floatright'></div></div>
+	</div>
+</body>
+</html>

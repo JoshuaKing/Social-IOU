@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" href="css/green.css">
+	<script src="js/jquery.js"></script>
+	<style>
+		.loadball {
+			width: 10px;
+			height: 10px;
+			background-color: #80C247;
+			border-radius: 5px;
+		}
+		
+		.floatleft {
+			float: left;
+		}
+		
+		.floatright {
+			float: right;
+		}
+		
+		.loader {
+			width: 50px;
+			height: 10px;
+			position: absolute;
+			-webkit-transition: all 100s linear;
+			-moz-transition: all 100s linear;
+			-o-transition: all 100s linear;
+			position: relative;
+			top: -40px;
+			left: -10px;
+		}
+		
+		#loading2 {
+			opacity: 0.6;
+			
+			-webkit-transition: all 100s linear 75ms;
+			-moz-transition: all 100s linear 75ms;
+			-o-transition: all 100s linear 75ms;
+			top: -50px;
+		}
+		
+		#loading3 {
+			opacity: 0.4;
+			
+			-webkit-transition: all 100s linear 150ms;
+			-moz-transition: all 100s linear 150ms;
+			-o-transition: all 100s linear 150ms;
+			top: -60px;
+		}
+		
+		h1 {
+			margin-left: 70px;
+		}
+		
+		h2 {
+			margin-left: 70px;
+		}
+	</style>
+	<script>
+		$(document).ready(function() {			
+			var q = window.location.search;
+			
+			if (q.length==0) {
+				$(".loader").css("display","none");
+				$("#dashboard h1").css("margin-left","0px");
+				$("#dashboard h2").css("margin-left","0px");
+				$("#dashboard").find("h1").html("Ok.");
+				$("#dashboard").find("h2").html("You did not submit to facebook");
+				setTimeout("window.close()",1000);
+				opener.location.reload(true);
+			} else {
+				$("#dashboard h1").html("Thank you");
+				$("#dashboard h2").html("Please wait.");
+				
+				$(".loader").click(function() {
+					$(this).css("-webkit-transform","rotate(36000deg)");
+					$(this).css("-moz-transform","rotate(36000deg)");
+					$(this).css("-o-transform","rotate(36000deg)");
+				}).click();
+				opener.location.reload(true);
+				window.close();
+			}
+		});
+	</script>
+</head>
+<body>
+	<div id="dashboard">
+	<h1></h1>
+	<h2></h2>
+	<div class='loader' id='loading1'><div class='loadball floatleft'></div><div class='loadball floatright'></div></div>
+	<div class='loader' id='loading2'><div class='loadball floatleft'></div><div class='loadball floatright'></div></div>
+	<div class='loader' id='loading3'><div class='loadball floatleft'></div><div class='loadball floatright'></div></div>
+	</div>
+</body>
+</html>

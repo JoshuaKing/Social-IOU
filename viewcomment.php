@@ -1,90 +1,86 @@
 <?php
+	session_start();
 	require_once("backend/mysqli.php");
-	$user = strip_tags($_COOKIE['user']);
-	$userid = intval(strip_tags($_COOKIE['userid']));
-	$password = $_COOKIE['password'];
-	$loggedin = false;
-	$email = "";
-	
-	
+?>
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" href="css/green.css">
+	<link rel="stylesheet" href="css/viewcomment.css">
+	<script src="js/jquery.js"></script>
+	<script src="js/facebook.js"></script>
+</head>
+
+<body>
+<?php require_once("minihtml/header.html"); ?>
+<div id="dashboard">
+<?php
+	if (isset($_SESSION['token']) && !empty($_SESSION['token'])) {
+		echo "<div id='profile'>";
+		echo "<img class='profilepicture' onerror=\"alert('Sorry, you need to log in again.');window.location.href = './?expired=true&redirect_to='+escape(window.location.href);\" src='https://graph.facebook.com/me/picture?access_token=".$_SESSION['token']."' />";
+		echo "<h1 class='profileusername'>Hi, ".$_SESSION['username']."</h1>";
+		echo "</div>";
+	}
+?>
+
+<section><header>
+<?php
+	$found = true;
 	try {
-		$db = new dbWrapper();
+		$db = new dbWrapper();		
 		
-		
+		$debt = $db->q("SELECT debts.*,IF(value_item='',CONCAT('$',value_money),value_item) AS value FROM debts WHERE id=?","i",$_GET['id']);
+		if (sizeof($debt)>0) {
+			$debt = $debt[0];
+			echo "<strong>".$debt['from']."</strong> owes <strong>".$debt['value']."</strong> to <strong>".$debt['to']."</strong>";
+		} else {
+			echo "Sorry, we could not find that IOU.";
+			$found = false;
+		}
 	} catch (Exception $e) {
-		echo "Sorry, there was an error.";
+		echo "Sorry, there was an error.<br/>".$e->getMessage();
 		exit();
 	}
 ?>
-<html>
-<head>
-	<link rel="stylesheet" href="css/main.css">
-	<script src="jquery.js"></script>
-	<script>
-		function remove(item) {
-			$("#"+item).fadeOut("slow");
-			$.post("./markdone.php","itemid="+item);
-		}
-		
-		function postcomment(form, id) {
-			var comment = $(form).find("#comment").val();
-			$(form).find("#comment").attr("value","");
-			$.post("./submitcomment.php","comment="+escape(comment)+"&debtid="+id);
-			
-			$(form).find(".feed").append("<div class='comment'>"
-				+ "<span class='author'><?php echo $_COOKIE['user']; ?></span>"
-				+ "<comment>"+comment+"</comment>"
-				+ "</div>");
-		}
-	</script>
-</head>
-<body>
-<header><a href='./'>St Leo's College IOU System</a></header><span class='viewall'><!-- <a href='./viewall.php'>View All Debts About Me</a> |  --><a href='./login.php'>Login</a> | <a href='./account.php'>Account</a></span>
-<form method="GET" target="_self" action="./"><input class="user" name="user" placeholder="View As User..."></input></form>
+</header><span id="row"><span id="leftcolumn"></span><span id="centercolumn">
 <?php
 	try {
-		$query = "SELECT debts.id, "
-		. "IF(debts.due='0000-00-00','ASAP',DATE_FORMAT(debts.due,'%d %b %Y')) AS due, "
-		. "DATE_FORMAT(debts.made,'%d %b %Y') AS made, "
-		. "IF(debts.paid='0000-00-00','NOTPAID',DATE_FORMAT(debts.paid,'%d %b %Y')) AS paid, "
-		. "(SELECT users.name FROM users WHERE id=debts.from) AS fromuser, "
-		. "(SELECT users.name FROM users WHERE id=debts.to) AS touser, "
-		. "IF(debts.value_item='',CONCAT('$',debts.value_money),debts.value_item) AS value "
-		. "FROM debts WHERE `id`=? ";
-		
-		$owed = $db->q($query,"i",intval($_GET['view']));
-		$row = $owed[0];
-		echo "<div style='margin-left:50px;'>";
-		
-		if ($row['paid']!="NOTPAID") {
-			echo "<article id='".$row['id']."'><input type='button' class='done' value='done' onclick=\"remove(".$row['id'].")\"></input><input type='button' class='edit' value='edit' onclick=\"edit(".$row['id'].")\"></input><mark><a href='./?user=".urlencode($row['fromuser'])."'>".$row['fromuser']."</a></mark> owes ".$row['value']."<br/>"
-			. "<small style='color:green;'>Paid: <span>".$row['paid']."</span></small><br/>"
-			. "<small>Due: <span>".$row['due']."</span></small>"
-			. "</article>";
-		} else {
-			echo "<article id='".$row['id']."'><input type='button' class='done' value='done' onclick=\"remove(".$row['id'].")\"></input><input type='button' class='edit' value='edit' onclick=\"edit(".$row['id'].")\"></input><mark><a href='./?user=".urlencode($row['fromuser'])."'>".$row['fromuser']."</a></mark> owes ".$row['value']."<br/>"
-			. "<small>Due: <span>".$row['due']."</span></small><br/>"
-			. "<small>Created: <span>".$row['made']."</span></small>"
-			. "</article>";
+		$comments = $db->q("SELECT * FROM comments WHERE debtid=?","i",$_GET['id']);
+		if ($found && sizeof($comments)==0) {
+			echo "<article>No comments, be the first!</article>";
+		} else if ($found) {
+			foreach($comments as $comment) {
+				echo "<article><h1>".strip_tags($comment['author'])."</h1>";
+				echo "<p>".strip_tags($comment['comment'])."</p></article>";
+			}
 		}
-		
-		$comments = $db->q("SELECT comments.*, (SELECT name FROM users WHERE users.id=comments.author) AS name FROM comments WHERE debtid=? ORDER BY posted ASC","i",$row['id']);
-
-		
-		echo "<form onsubmit='postcomment(this,".$row['id']."); return false;'>";	
-		
-		echo "<div class='feed'>";
-		foreach ($comments as $comment) {
-			echo "<div class='comment'>";
-			echo "<span class='author'>".$comment['name']."</span>";
-			echo "<comment>". stripcslashes($comment['comment'])."</comment>";
-			echo "</div>";
-		}
-		echo "</div>";
-		echo "<input class='textinput' id='comment' style='width:200px;'></input><input class='button' type='submit' value='Post Comment'></input><br/>";
-		echo "</form>";
-		echo "</div>";
 	} catch (Exception $e) {
-		echo "Sorry, there was an error in amounts owed to you.".$e->getMessage();
+		echo "Sorry, there was an error.<br/>";
+		exit();
+	}
+	
+	if (!$found) {
+		echo "</span><span id='rightcolumn'></span></span>";
+		echo "</body></html>";
+		exit();
+	}
+	
+	if (!isset($_SESSION['token']) || empty($_SESSION['token'])) {
+		echo "</span><span id='rightcolumn'></span></span>";
+		echo "<article><span id='fblogin' onclick='fb_login();'><span class='facebookfontgreyed'>facebook</span> Instant Login</span>";
+		echo "<span class='dot'></span><span class='dot'></span><span class='dot'></span><span class='dot' style='margin-left:20px;'></span>";
+		echo "<h1 style='float:right;padding-top:25px;'>Login to Comment</h1></article>";
+		echo "</section></div></body></html>";
+		exit();
 	}
 ?>
+<form onsubmit="submitcomment(<?php echo $_GET['id']; ?>,this); return false;" id="commentarea">
+<input id="comment" name="comment" placeholder="Comment here"></input>
+<input id="postcomment" type="submit" value="Post"></input>
+</form></span>
+<span id="rightcolumn"></span>
+</span>
+</section>
+</div>
+</body>
+</html>

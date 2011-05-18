@@ -1,14 +1,12 @@
 <?php
+require_once("config.php");
 
 class dbWrapper {
 	protected $_mysqli;
  
 	public function __construct() {
-		$database = "mysqldatabase";
-		$host = "localhost";
-		$username = "umysqlsername";
-		$password = "mysqlpassword";
-		$this->_mysqli = new mysqli($host,$username,$password,$database);
+		global $SQL_DATABASE, $SQL_USER, $SQL_PASSWORD, $SQL_HOST;
+		$this->_mysqli = new mysqli($SQL_HOST,$SQL_USER,$SQL_PASSWORD,$SQL_DATABASE);
 		if ($this->_mysqli->connect_errno)
 			throw new Exception("MySQLi Error: Could not connect to database.".$this->_mysqli->connect_error);
 	}
