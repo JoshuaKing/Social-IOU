@@ -8,6 +8,7 @@ body {
 }
 
 body header {
+	background-color: #80C247;
 	background: -webkit-gradient(linear, center top, center bottom, from(#80C247), color-stop(90%, #80C247), color-stop(90%, #ccc), to(#f2f2f2));
 	background: -moz-linear-gradient(center top, #80C247, #80C247 90%, #ccc 90%, #f2f2f2);
 	color: white;
@@ -43,14 +44,14 @@ h2 {
 h3 {
 	display: block;
 	width: 200px;
-	height: 30px;
-	line-height: 25px;
+	height: 35px;
+	line-height: 30px;
 	margin-right: 3px;
 	float: left;
 	position: relative;
 	top:-25px;
 	background: #f2f2f2;
-	padding-top: 3px;
+	padding-top: 4px;
 	cursor: pointer;
 }
 
@@ -165,7 +166,7 @@ span #rightcolumn {
     position: relative;
     display: block;
     z-index: 5;
-    top: -10px;
+    top: -15px;
     
     border-left: 12px solid transparent;
     border-right: 12px solid transparent;
@@ -181,6 +182,14 @@ span #rightcolumn {
 	max-width: 500px;
 	border: 2px solid #D2EABD;
 	border-radius: 5px;
+}
+
+.recorddone {
+	background: #D2EABD;
+}
+
+.recordundone {
+	background: none;
 }
 
 .record header {
@@ -206,6 +215,32 @@ span #rightcolumn {
 .record article p {
 	display: block;
 	margin-left: 15px;
+}
+
+.regularbutton {
+	padding-left: 10px;
+	padding-right: 10px;
+	height: 50px;
+	max-height: 35px;
+	color: #444;
+	font-weight: bold;
+	background-color: #f2f2f2;
+	background: -webkit-gradient(linear, center top, center bottom, from(#f2f2f2), color-stop(40%, #f2f2f2), color-stop(60%, #eee), to(#eee));
+	background: -moz-linear-gradient(90deg, #f2f2f2, #f2f2f2 40%, #eee 60%, #eee);
+	border: 2px solid #ccc;
+	border-radius: 10px;
+	margin: 0;
+	margin-left: 5px;
+	margin-right: 5px;
+	cursor: pointer;
+}
+
+.redbutton {
+	color: #844;
+}
+
+.greenbutton {
+	color: #484;
 }
 
 /* ID css follows */
@@ -273,6 +308,20 @@ span #rightcolumn {
 	margin-left: 8px;
 }
 
+#comment {
+	width: 270px;
+	height: 50px;
+	max-height: 35px;
+	color: #444;
+	font-weight: bold;
+	background-color: white;
+	border: 2px solid #ccc;
+	border-radius: 10px;
+	padding-left: 15px;
+	margin-right: 8px;
+	margin-left: 8px;
+}
+
 #submit {
 	padding-left: 10px;
 	padding-right: 10px;
@@ -282,10 +331,46 @@ span #rightcolumn {
 	font-weight: bold;
 	background-color: #f2f2f2;
 	background: -webkit-gradient(linear, center top, center bottom, from(#f2f2f2), color-stop(40%, #f2f2f2), color-stop(60%, #eee), to(#eee));
-	background: -moz-linear-gradient(center top, #80C247, #80C247 90%, #ccc 90%, #f2f2f2);
+	background: -moz-linear-gradient(90deg, #f2f2f2, #f2f2f2 40%, #eee 60%, #eee);
 	border: 2px solid #ccc;
 	border-radius: 10px;
 	margin: 0;
+	cursor: pointer;
+}
+
+#markdone {
+	padding-left: 10px;
+	padding-right: 10px;
+	height: 50px;
+	max-height: 35px;
+	color: #484;
+	font-weight: bold;
+	background-color: #f2f2f2;
+	background: -webkit-gradient(linear, center top, center bottom, from(#f2f2f2), color-stop(40%, #f2f2f2), color-stop(60%, #eee), to(#eee));
+	background: -moz-linear-gradient(90deg, #f2f2f2, #f2f2f2 40%, #eee 60%, #eee);
+	border: 2px solid #ccc;
+	border-radius: 10px;
+	margin: 0;
+	margin-left: 5px;
+	margin-right: 5px;
+	cursor: pointer;
+}
+
+#markundone {
+	padding-left: 10px;
+	padding-right: 10px;
+	height: 50px;
+	max-height: 35px;
+	color: #844;
+	font-weight: bold;
+	background-color: #f2f2f2;
+	background: -webkit-gradient(linear, center top, center bottom, from(#f2f2f2), color-stop(40%, #f2f2f2), color-stop(60%, #eee), to(#eee));
+	background: -moz-linear-gradient(90deg, #f2f2f2, #f2f2f2 40%, #eee 60%, #eee);
+	border: 2px solid #ccc;
+	border-radius: 10px;
+	margin: 0;
+	margin-left: 5px;
+	margin-right: 5px;
 	cursor: pointer;
 }
 
@@ -296,7 +381,7 @@ span #rightcolumn {
 	font-size: 16px;
 	font-weight: bold;
 	position: relative;
-	top: -30px;
+	top: -35px;
 	background: #D2EABD;
 }
 
@@ -307,17 +392,29 @@ span #rightcolumn {
 	font-size: 16px;
 	font-weight: bold;
 	position: relative;
-	top: -30px;
+	top: -35px;
+	background: #D2EABD;
+}
+
+#editsettings {
+	display:none;
+	height: 40px;
+	padding: 20px;
+	font-size: 16px;
+	font-weight: bold;
+	position: relative;
+	top: -35px;
 	background: #D2EABD;
 }
 
 #headers {
 	width: 100%;
-	height: 25px;
+	height: 35px;
 	margin: 0;
 	padding: 0;
 	text-align: center;
 	margin-top: 20px;
+	overflow: hidden;
 }
 
 #fblogin:hover {
@@ -362,7 +459,7 @@ span #rightcolumn {
 	border: 0px solid #80C247;
 	width: 350px;
 	margin-top: 5px;
-	left: 280px;
+	left: 360px;
 	top: -35px;
 }
 
