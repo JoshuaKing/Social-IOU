@@ -1,12 +1,12 @@
 function fb_login(redirect) {
 	var url = "https://www.facebook.com/dialog/oauth?display=popup&response_type=token";
-	url += "&client_id=221074584585871";
+	url += "&client_id=211185568916119";
 	
 	if (redirect) {
 		alert("redirecting to "+redirect);
-		url += "&redirect_uri="+escape("http://vierware.com/projects/iou/dev/checklogin.html?redirect="+redirect);
+		url += "&redirect_uri="+escape("http://socialiou.com/checklogin.html?redirect="+redirect);
 	} else {
-		url += "&redirect_uri=http://vierware.com/projects/iou/dev/checklogin.html";
+		url += "&redirect_uri=http://socialiou.com/checklogin.html";
 	}
 	var w = window.open(url,"Facebook Login","height=400,width=480,left="+(screen.width-480)/2+",top="+(screen.height-400)/2);
 	w.focus();
@@ -167,18 +167,18 @@ function create_iou(friendid, friendname, message) {
 	}
 	
 	var url = "http://www.facebook.com/dialog/feed?display=popup&";
-	url += "app_id=221074584585871&";
+	url += "app_id=211185568916119&";
 	if (friendid!=0) {
 		url += "to="+friendid+"&";
 		url += "message=I%20owe%20you%20"+escape(message)+"&";
 	} else {
 		url += "message=I%20owe%20"+escape(message)+"%20"+escape(friendname)+"&";
 	}
-	url += "link=http://vierware.com/projects/iou/dev/viewcomment.php?id="+viewid+"&";
+	url += "link=http://socialiou.com/viewcomment.php?id="+viewid+"&";
 	url += "name=Social%20IOU&";
 	url += "caption=New%20IOU%20for%20you.&";
 	url += "description="+escape(localStorage["username"]+" created a new IOU to you. To see what you are owed, view the link! :) (No Spam)")+"&";
-	url += "redirect_uri=http://vierware.com/projects/iou/dev/checksubmission.html";
+	url += "redirect_uri=http://socialiou.com/checksubmission.html";
 	
 	// open popup to get user to confirm
 	var w = window.open(url, "IOU Facebook Submission", "height=400,width=480,left="+(screen.width-480)/2+",top="+(screen.height-400)/2);
@@ -212,18 +212,18 @@ function create_debt(friendid, friendname, message) {
 		return;
 	}
 	var url = "http://www.facebook.com/dialog/feed?display=popup&";
-	url += "app_id=221074584585871&";
+	url += "app_id=211185568916119&";
 	if (friendid!=0) {
 		url += "to="+friendid+"&";
 		url += "message=You%20owe%20me%20"+escape(message)+".&";
 	} else {
 		url += "message="+escape(friendname)+"%20owe's%20me%20"+escape(message)+"&";
 	}
-	url += "link=http://vierware.com/projects/iou/dev/viewcomment.php?id="+viewid+"&";
+	url += "link=http://socialiou.com/viewcomment.php?id="+viewid+"&";
 	url += "name=Social%20IOU&";
 	url += "caption=You%20have%20a%20new%20IOU%20for%20"+escape(localStorage["username"])+".&";
 	url += "description="+escape(localStorage["username"]+" says that you owe them something! To see what you are owed, view the link! :) (No Spam)")+"&";
-	url += "redirect_uri=http://vierware.com/projects/iou/dev/checksubmission.html";
+	url += "redirect_uri=http://socialiou.com/checksubmission.html";
 	
 	// open popup to get user to confirm
 	var w = window.open(url, "IOU Facebook Submission", "height=400,width=480,left="+(screen.width-480)/2+",top="+(screen.height-400)/2);
