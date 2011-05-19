@@ -39,6 +39,7 @@
 			});
 		}
 	</script>
+	<?php require_once("minihtml/analytics.html"); ?>
 </head>
 
 <body>
