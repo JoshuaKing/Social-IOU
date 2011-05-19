@@ -1,6 +1,7 @@
 <?php
 	session_start();
 	require_once("backend/mysqli.php");
+	$viewid = intval($_GET['id']);
 ?>
 <!DOCTYPE html>
 <html>
@@ -29,7 +30,7 @@
 	try {
 		$db = new dbWrapper();		
 		
-		$debt = $db->q("SELECT debts.*,IF(value_item='',CONCAT('$',value_money),value_item) AS value FROM debts WHERE id=?","i",$_GET['id']);
+		$debt = $db->q("SELECT debts.*,IF(value_item='',CONCAT('$',value_money),value_item) AS value FROM debts WHERE id=?","i",$viewid);
 		if (sizeof($debt)>0) {
 			$debt = $debt[0];
 			echo "<strong>".$debt['from']."</strong> owes <strong>".$debt['value']."</strong> to <strong>".$debt['to']."</strong>";
@@ -38,7 +39,7 @@
 			$found = false;
 		}
 	} catch (Exception $e) {
-		echo "Sorry, there was an error.<br/>".$e->getMessage();
+		echo "Sorry, there was an error.<br/>";
 		exit();
 	}
 ?>
@@ -67,14 +68,14 @@
 	
 	if (!isset($_SESSION['token']) || empty($_SESSION['token'])) {
 		echo "</span><span id='rightcolumn'></span></span>";
-		echo "<article><span id='fblogin' onclick='fb_login();'><span class='facebookfontgreyed'>facebook</span> Instant Login</span>";
+		echo "<article><span id='fblogin' onclick=\"fb_login('viewcomment.php?id=$viewid');\"><span class='facebookfontgreyed'>facebook</span> Instant Login</span>";
 		echo "<span class='dot'></span><span class='dot'></span><span class='dot'></span><span class='dot' style='margin-left:20px;'></span>";
 		echo "<h1 style='float:right;padding-top:25px;'>Login to Comment</h1></article>";
 		echo "</section></div></body></html>";
 		exit();
 	}
 ?>
-<form onsubmit="submitcomment(<?php echo $_GET['id']; ?>,this); return false;" id="commentarea">
+<form onsubmit="submitcomment(<?php echo $viewid; ?>,this); return false;" id="commentarea">
 <input id="comment" name="comment" placeholder="Comment here"></input>
 <input id="postcomment" type="submit" value="Post"></input>
 </form></span>
