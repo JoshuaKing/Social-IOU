@@ -17,6 +17,7 @@
 <div id="dashboard">
 <?php
 	if (!isset($_SESSION['token'])) {
+		echo "<span id='fblogin' onclick='fb_login();'><span class='facebookfontgreyed'>facebook</span> Instant Login</span><span class='dot'></span><span class='dot'></span><span class='dot'></span><span class='dot'></span><span class='dot'></span><span class='dot'></span><span class='dot'></span><span class='dot'></span><span class='dot'></span>";
 		echo "<h1>Sorry</h1><h2>You need to log in first!</h2>";
 		echo "</div></body></html>";
 		exit();
@@ -24,7 +25,7 @@
 ?>
 
 <div id="profile">
-	<img id="profilepicture" onerror="alert('Sorry, you need to log in again.');window.location.href = './?expired=true&redirect_to='+escape(window.location.href);" class='profilepicture' src="https://graph.facebook.com/me/picture?access_token=<?php echo $_SESSION['token']; ?>" />
+	<img id="profilepicture" onerror="alert('Sorry, you need to log in again.');window.location.href = './';" class='profilepicture' src="https://graph.facebook.com/me/picture?access_token=<?php echo $_SESSION['token']; ?>" />
 	<h1 class="profileusername">Hi, <?php echo $_SESSION['username']; ?></h1>
 </div>
 
@@ -155,7 +156,7 @@ I owe <input id="message" placeholder="Debt"></input> to my friend
 			} else {
 				echo "'>";
 			}
-			echo "<header><strong>".stripcslashes(strip_tags($debt['from']))."</strong> owes <strong>".stripcslashes(strip_tags($debt['value']))."</strong> to <strong>".stripcslashes(strip_tags($debt['to']))."</strong>.</header>";
+			echo "<header><a href='http://vierware.com/projects/iou/dev/viewcomment.php?id=".intval($debt['id'])."'><strong>".stripcslashes(strip_tags($debt['from']))."</strong> owes <strong>".stripcslashes(strip_tags($debt['value']))."</strong> to <strong>".stripcslashes(strip_tags($debt['to']))."</strong>.</a></header>";
 			
 			$comments = $db->q("SELECT * FROM comments WHERE debtid=?","i",$debt['id']);
 			foreach ($comments as $comment) {
