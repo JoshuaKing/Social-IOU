@@ -55,6 +55,12 @@ h3 {
 	cursor: pointer;
 }
 
+mark {
+	color: #80C247;
+	font-weight: bold;
+	background: inherit;
+}
+
 span #centercolumn {
 	display: table-cell;
 }
