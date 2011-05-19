@@ -10,6 +10,35 @@
 	<link rel="stylesheet" href="css/viewcomment.css">
 	<script src="js/jquery.js"></script>
 	<script src="js/facebook.js"></script>
+	<script>
+		function iouundone(id, button, refresh) {
+			$(button).attr("disabled","true");
+			$(button).attr("value","Working...");
+			$.post("./markundone.php","id="+id).success(function() {
+				$("#centercolumn").removeClass("recorddone");
+				$("#centercolumn").addClass("recordundone");
+				$(button).replaceWith("<input id='markdone' type='button' value='Mark Done' onclick='ioudone("+id+",this);'></input>");
+				if (refresh)
+					window.location.reload(true);
+			}).error(function() {
+				alert("Sorry, you need to own the IOU to mark it as done.");
+			});
+		}
+		
+		function ioudone(id, button, refresh) {
+			$(button).attr("disabled","true");
+			$(button).attr("value","Working...");
+			$.post("./markdone.php","id="+id).success(function() {
+				$("#centercolumn").removeClass("recordundone");
+				$("#centercolumn").addClass("recorddone");
+				$(button).replaceWith("<input id='markundone' type='button' value='Mark Undone' onclick='iouundone("+id+",this);'></input>");
+				if (refresh)
+					window.location.reload(true);
+			}).error(function() {
+				alert("Sorry, you need to own the IOU to mark it as undone.");
+			});
+		}
+	</script>
 </head>
 
 <body>
@@ -43,8 +72,12 @@
 		exit();
 	}
 ?>
-</header><span id="row"><span id="leftcolumn"></span><span id="centercolumn">
+</header><span id="row"><span id="leftcolumn"></span><span id="centercolumn" class='record
 <?php
+	if ($debt['paid']!='0000-00-00')
+		echo " recorddone'>";
+	else
+		echo "'>";
 	try {
 		$comments = $db->q("SELECT * FROM comments WHERE debtid=?","i",$_GET['id']);
 		if ($found && sizeof($comments)==0) {
@@ -75,9 +108,18 @@
 		exit();
 	}
 ?>
-<form onsubmit="submitcomment(<?php echo $viewid; ?>,this); return false;" id="commentarea">
+<form onsubmit="submitcomment(<?php echo $viewid; ?>,this,true); return false;" id="commentarea">
 <input id="comment" name="comment" placeholder="Comment here"></input>
 <input id="postcomment" type="submit" value="Post"></input>
+<?php
+	if ($debt['from_id']==$_SESSION['userid'] || $debt['to_id']==$_SESSION['userid']) {
+		if ($debt['paid']!='0000-00-00') {
+			echo "<input id='markundone' type='button' value='Mark Undone' onclick='iouundone(".$debt['id'].",this);'></input>";
+		} else {
+			echo "<input id='markdone' name='".$debt['paid']."' type='button' value='Mark Done' onclick='ioudone(".$debt['id'].",this);'></input>";
+		}
+	}
+?>
 </form></span>
 <span id="rightcolumn"></span>
 </span>
