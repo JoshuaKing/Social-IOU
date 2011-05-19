@@ -229,12 +229,13 @@ function create_debt(friendid, friendname, message) {
 }
 
 function dashboardcomment(id, form, refresh) {
-		if (!refresh) {
-			$(form).before("<article><h1></h1><p></p>");
-			$(form).prev().find("h1").text(localStorage["username"]);
-			$(form).prev().find("p").text(comment);
-		}
 	var comment = $(form).find("#comment").val();
+	if (!refresh) {
+		$(form).before("<article><h1></h1><p></p></article>");
+		$(form).prev().find("h1").text(localStorage["username"]);
+		$(form).prev().find("p").text(comment);
+	}
+	$(form).find("#comment").attr("value","").html("");
 	$.post("./submitcomment.php","id="+id+"&comment="+comment).complete(function() {
 		if (refresh)
 			window.location.reload(true);
@@ -243,6 +244,7 @@ function dashboardcomment(id, form, refresh) {
 
 function submitcomment(id, form, refresh) {
 	var comment = $(form).find("#comment").val();
+	$(form).find("#comment").attr("value","").html("");
 	$.post("./submitcomment.php","id="+id+"&comment="+comment).complete(function() {
 		if (refresh)
 			window.location.reload(true);
@@ -250,6 +252,8 @@ function submitcomment(id, form, refresh) {
 }
 
 function markiouundone(id, button, refresh) {
+	$(button).attr("disabled","true");
+	$(button).attr("value","Working...");
 	$.post("./markundone.php","id="+id).success(function() {
 		$(button).parent().parent().removeClass("recorddone");
 		$(button).parent().parent().addClass("recordundone");
@@ -262,6 +266,8 @@ function markiouundone(id, button, refresh) {
 }
 
 function markioudone(id, button, refresh) {
+	$(button).attr("disabled","true");
+	$(button).attr("value","Working...");
 	$.post("./markdone.php","id="+id).success(function() {
 		$(button).parent().parent().removeClass("recordundone");
 		$(button).parent().parent().addClass("recorddone");
