@@ -8,6 +8,7 @@
 	<link rel="stylesheet" href="css/green.css">
 	<script src="js/jquery.js"></script>
 	<script src="js/facebook.js"></script>
+	<?php require_once("minihtml/analytics.html"); ?>
 </head>
 
 <body onload="dashboardload();">
@@ -156,7 +157,7 @@ I owe <input id="message" placeholder="Debt"></input> to my friend
 			} else {
 				echo "'>";
 			}
-			echo "<header><a href='http://vierware.com/projects/iou/dev/viewcomment.php?id=".intval($debt['id'])."'><strong>".stripcslashes(strip_tags($debt['from']))."</strong> owes <strong>".stripcslashes(strip_tags($debt['value']))."</strong> to <strong>".stripcslashes(strip_tags($debt['to']))."</strong>.</a></header>";
+			echo "<header><a href='http://socialiou.com/viewcomment.php?id=".intval($debt['id'])."'><strong>".stripcslashes(strip_tags($debt['from']))."</strong> owes <strong>".stripcslashes(strip_tags($debt['value']))."</strong> to <strong>".stripcslashes(strip_tags($debt['to']))."</strong>.</a></header>";
 			
 			$comments = $db->q("SELECT * FROM comments WHERE debtid=?","i",$debt['id']);
 			foreach ($comments as $comment) {
