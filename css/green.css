@@ -184,6 +184,10 @@ span #rightcolumn {
 	border-radius: 5px;
 }
 
+.record a:hover {
+	text-decoration: underline;
+}
+
 .recorddone {
 	background: #D2EABD;
 }
