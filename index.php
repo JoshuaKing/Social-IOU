@@ -4,13 +4,14 @@
 	<link rel="stylesheet" href="css/green.css">
 	<script src="js/jquery.js"></script>
 	<script src="js/facebook.js"></script>
+	<?php require_once("minihtml/analytics.html"); ?>
 </head>
 <body>
 	<?php require_once("minihtml/header.html"); ?>
 	<div id="dashboard">
 		<h1>Social IOU</h1>
-		<h2>The social way of recording your IOU's, brought to you by Vierware</h2>
-		<p>This site is under construction.  We hope you like the look of this site and appreciate feedback: admin[at]vierware.com</p>
+		<h2>The social way of recording your IOU's, brought to you by <a href='http://vierware.com' style='color:inherit;'>Vierware</a></h2>
+		<p>Hello! We are currently in our <mark>Beta</mark> stages!  We hope you like the look of this site and appreciate feedback: support@socialiou.com</p>
 	    <br/>
 		<h1>To Use</h1>
 		<p>
