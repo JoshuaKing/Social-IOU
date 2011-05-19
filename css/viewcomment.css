@@ -30,18 +30,12 @@ section header {
 }
 
 article {
-	min-height: 50px;
 	min-width: 415px;
-	padding: 15px;
-	border-top: 2px solid #80C247;
+	padding: 5px;
 }
 
 article h1 {
 	font-size: 18px;
-}
-
-#centercolumn article:first-child {
-	border: none;
 }
 
 strong {
@@ -53,27 +47,68 @@ form {
 }
 
 form #comment {
-	width: 330px;
+	width: 280px;
 	height: 50px;
 	max-height: 35px;
 	color: #444;
 	font-weight: bold;
-	background-color: #D2EABD;
-	border: 2px solid #444;
+	background-color: white;
+	border: 2px solid #ccc;
 	border-radius: 10px;
 	padding-left: 15px;
 	margin-right: 8px;
+	margin-left: 8px;
 }
 
 form #postcomment {
-	width: 65px;
+	padding-left: 10px;
+	padding-right: 10px;
 	height: 50px;
-	max-height: 35px;
-	color: #80C247;
+	max-height: 40px;
+	width: 50px;
+	color: #444;
 	font-weight: bold;
 	background-color: #f2f2f2;
-	border: 2px solid #444;
+	background: -webkit-gradient(linear, center top, center bottom, from(#f2f2f2), color-stop(40%, #f2f2f2), color-stop(60%, #eee), to(#eee));
+	background: -moz-linear-gradient(90deg, #f2f2f2, #f2f2f2 40%, #eee 60%, #eee);
+	border: 2px solid #ccc;
 	border-radius: 10px;
 	margin: 0;
+	cursor: pointer;
+}
+
+#markdone {
+	padding-left: 10px;
+	padding-right: 10px;
+	height: 50px;
+	max-height: 40px;
+	color: #484;
+	font-weight: bold;
+	background-color: #f2f2f2;
+	background: -webkit-gradient(linear, center top, center bottom, from(#f2f2f2), color-stop(40%, #f2f2f2), color-stop(60%, #eee), to(#eee));
+	background: -moz-linear-gradient(90deg, #f2f2f2, #f2f2f2 40%, #eee 60%, #eee);
+	border: 2px solid #ccc;
+	border-radius: 10px;
+	margin: 0;
+	margin-left: 5px;
+	margin-right: 5px;
+	cursor: pointer;
+}
+
+#markundone {
+	padding-left: 10px;
+	padding-right: 10px;
+	height: 50px;
+	max-height: 40px;
+	color: #844;
+	font-weight: bold;
+	background-color: #f2f2f2;
+	background: -webkit-gradient(linear, center top, center bottom, from(#f2f2f2), color-stop(40%, #f2f2f2), color-stop(60%, #eee), to(#eee));
+	background: -moz-linear-gradient(90deg, #f2f2f2, #f2f2f2 40%, #eee 60%, #eee);
+	border: 2px solid #ccc;
+	border-radius: 10px;
+	margin: 0;
+	margin-left: 5px;
+	margin-right: 5px;
 	cursor: pointer;
 }
