@@ -70,6 +70,7 @@ function dashboardload() {
 	if (localStorage["autosubmittofacebook"]=="false") {
 		$("#autofbsubmit").addClass("redbutton");
 	} else {
+		localStorage["autosubmittofacebook"]="true";
 		$("#autofbsubmit").addClass("greenbutton");
 	}
 	
@@ -77,6 +78,7 @@ function dashboardload() {
 		$("#showpaid").addClass("redbutton");
 		$(".recorddone").hide();
 	} else {
+		localStorage["showpaid"]="true";
 		$("#showpaid").addClass("greenbutton");
 	}
 }
