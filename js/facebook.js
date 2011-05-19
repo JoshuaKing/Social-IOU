@@ -1,13 +1,19 @@
-function fb_login() {
+function fb_login(redirect) {
 	var url = "https://www.facebook.com/dialog/oauth?display=popup&response_type=token";
 	url += "&client_id=221074584585871";
-	url += "&redirect_uri=http://vierware.com/projects/iou/dev/checklogin.html";
+	
+	if (redirect) {
+		alert("redirecting to "+redirect);
+		url += "&redirect_uri="+escape("http://vierware.com/projects/iou/dev/checklogin.html?redirect="+redirect);
+	} else {
+		url += "&redirect_uri=http://vierware.com/projects/iou/dev/checklogin.html";
+	}
 	var w = window.open(url,"Facebook Login","height=400,width=480,left="+(screen.width-480)/2+",top="+(screen.height-400)/2);
 	w.focus();
 }
 
-function dashboardload() {	
-	if (localStorage["JSON_FriendList"]) {
+function dashboardload() {
+	if (localStorage["JSON_FriendList"] && localStorage["JSON_FriendList"]!="undefined") {
 		populateFriendList();
 	} else {	
 		var url = "https://graph.facebook.com/me/friends?callback=storeFriendList&access_token="+localStorage["token"];
@@ -34,25 +40,45 @@ function dashboardload() {
 		}
 	});
 	
-	$("#headers h3").click(function(header) {
+	$("#headers h3").click(function(evt) {
 		$("#friendsuggestions").html("");
-		var val = $(header.target).attr("data-val");
+		var val = $(evt.target).attr("data-val");
 		if (val=="debt") {
 			$("#headerarrow").css("margin-left","294px");
 			$("#createdebt #to").attr("value","").html("");
 			$("#createdebt #message").attr("value","").html("");
 			$("#createiou").hide();
+			$("#editsettings").hide();
 			$("#createdebt").show();
 			$("#friendsuggestions").css({left:350});
-		} else {
+		} else if (val=="iou"){
 			$("#headerarrow").css("margin-left","94px");
 			$("#createiou #to").attr("value","").html("");
 			$("#createiou #message").attr("value","").html("");
 			$("#createiou").show();
 			$("#createdebt").hide();
-			$("#friendsuggestions").css({left:280});
+			$("#editsettings").hide();
+			$("#friendsuggestions").css({left:360});
+		} else if (val=="settings") {
+			$("#headerarrow").css("margin-left","494px");
+			$("#createiou").hide();			
+			$("#createdebt").hide();		
+			$("#editsettings").show();
 		}
 	});
+	
+	if (localStorage["autosubmittofacebook"]=="false") {
+		$("#autofbsubmit").addClass("redbutton");
+	} else {
+		$("#autofbsubmit").addClass("greenbutton");
+	}
+	
+	if (localStorage["showpaid"]=="false") {
+		$("#showpaid").addClass("redbutton");
+		$(".recorddone").hide();
+	} else {
+		$("#showpaid").addClass("greenbutton");
+	}
 }
 
 function onIOUsubmit() {
@@ -100,7 +126,6 @@ function chooseFriend(div) {
 
 function populateFriendList() {
 	var json_friends = JSON.parse(localStorage["JSON_FriendList"]);
-	
 	for (var i=0;i<json_friends.length; i++) {
 		var el = json_friends[i];
 		$("#friendlist").append("<div onclick='chooseFriend(this);' id='"+el["name"].toLowerCase()+"' data-id='"+el["id"]+"'><img class='smallprofile'></img><span>"+el["name"]+"</span></div>");
@@ -134,10 +159,11 @@ function create_iou(friendid, friendname, message) {
 		}
 	});
 	
-	// We have not inserted the message, so we
-	// cannot create a link to the post :/
+	if (localStorage["autosubmittofacebook"]=="false") {
+		window.location.reload(true);
+		return;
+	}
 	
-	//open_facebook_submission(friendid, 123, message);
 	var url = "http://www.facebook.com/dialog/feed?display=popup&";
 	url += "app_id=221074584585871&";
 	if (friendid!=0) {
@@ -154,7 +180,7 @@ function create_iou(friendid, friendname, message) {
 	
 	// open popup to get user to confirm
 	var w = window.open(url, "IOU Facebook Submission", "height=400,width=480,left="+(screen.width-480)/2+",top="+(screen.height-400)/2);
-	
+	window.location.reload(true);
 }
 
 function create_debt(friendid, friendname, message) {
@@ -179,10 +205,10 @@ function create_debt(friendid, friendname, message) {
 		}
 	});
 	
-	// We have not inserted the message, so we
-	// cannot create a link to the post :/
-	
-	//open_facebook_submission(friendid, 123, message);
+	if (localStorage["autosubmittofacebook"]=="false") {
+		window.location.reload(true);
+		return;
+	}
 	var url = "http://www.facebook.com/dialog/feed?display=popup&";
 	url += "app_id=221074584585871&";
 	if (friendid!=0) {
@@ -199,12 +225,75 @@ function create_debt(friendid, friendname, message) {
 	
 	// open popup to get user to confirm
 	var w = window.open(url, "IOU Facebook Submission", "height=400,width=480,left="+(screen.width-480)/2+",top="+(screen.height-400)/2);
-	
+	window.location.reload(true);
 }
 
-function submitcomment(id, form) {
+function dashboardcomment(id, form, refresh) {
+		if (!refresh) {
+			$(form).before("<article><h1></h1><p></p>");
+			$(form).prev().find("h1").text(localStorage["username"]);
+			$(form).prev().find("p").text(comment);
+		}
 	var comment = $(form).find("#comment").val();
-	$.post("./submitcomment.php","id="+id+"&comment="+comment).complete(function(a) {
-		window.location.reload(true);
+	$.post("./submitcomment.php","id="+id+"&comment="+comment).complete(function() {
+		if (refresh)
+			window.location.reload(true);
 	});
+}
+
+function submitcomment(id, form, refresh) {
+	var comment = $(form).find("#comment").val();
+	$.post("./submitcomment.php","id="+id+"&comment="+comment).complete(function() {
+		if (refresh)
+			window.location.reload(true);
+	});
+}
+
+function markiouundone(id, button, refresh) {
+	$.post("./markundone.php","id="+id).success(function() {
+		$(button).parent().parent().removeClass("recorddone");
+		$(button).parent().parent().addClass("recordundone");
+		$(button).replaceWith("<input id='markdone' type='button' value='Mark Done' onclick='markioudone("+id+",this);'></input>");
+		if (refresh)
+			window.location.reload(true);
+	}).error(function() {
+		alert("Sorry, you need to own the IOU to mark it as done.");
+	});
+}
+
+function markioudone(id, button, refresh) {
+	$.post("./markdone.php","id="+id).success(function() {
+		$(button).parent().parent().removeClass("recordundone");
+		$(button).parent().parent().addClass("recorddone");
+		$(button).replaceWith("<input id='markundone' type='button' value='Mark Undone' onclick='markiouundone("+id+",this);'></input>");
+		if (refresh)
+			window.location.reload(true);
+	}).error(function() {
+		alert("Sorry, you need to own the IOU to mark it as undone.");
+	});
+}
+
+function togglefbsubmit() {
+	if (localStorage["autosubmittofacebook"]=="false") {
+		localStorage["autosubmittofacebook"] = "true";
+		$("#autofbsubmit").addClass("greenbutton");
+		$("#autofbsubmit").removeClass("redbutton");
+	} else {
+		localStorage["autosubmittofacebook"] = "false";
+		$("#autofbsubmit").addClass("redbutton");
+		$("#autofbsubmit").removeClass("greenbutton");
+	}
+}
+
+function toggleshowpaid() {
+	$(".recorddone").toggle();
+	if (localStorage["showpaid"]=="true") {
+		localStorage["showpaid"] = "false";
+		$("#showpaid").addClass("redbutton");
+		$("#showpaid").removeClass("greenbutton");
+	} else {
+		localStorage["showpaid"] = "true";
+		$("#showpaid").addClass("greenbutton");
+		$("#showpaid").removeClass("redbutton");
+	}
 }
