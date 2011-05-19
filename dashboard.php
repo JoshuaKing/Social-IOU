@@ -31,9 +31,10 @@
 <div id="headers">
 	<h3 data-val="iou">Add IOU</h3>
 	<h3 data-val="debt">Add Debt</h3>
+	<h3 data-val="settings">Settings</h3>
 </div><span id="headerarrow" class='arrow-up'></span><br/>
 <form id="createiou" onsubmit="onIOUsubmit();return false;">
-I owe <input id="message" placeholder="Debt"></input> to
+I owe <input id="message" placeholder="Debt"></input> to my friend 
 <input id="to" name="to" placeholder="Friend"></input>
 <input id="submit" type="submit" value="Add IOU" onclick="$('#friendsuggestions').html('');"></input>
 </form>
@@ -41,6 +42,10 @@ I owe <input id="message" placeholder="Debt"></input> to
 <input id="message" placeholder="Debt"></input> is owed to me by
 <input id="to" name="to" placeholder="Friend"></input>
 <input id="submit" type="submit" value="Add Debt" onclick="$('#friendsuggestions').html('');"></input>
+</form>
+<form id="editsettings" onsubmit="return false;">
+<input id="autofbsubmit" class='regularbutton' type='button' value='Prompt for Facebook wall post.' onclick='togglefbsubmit(this);'></input>
+<input id="showpaid" class='regularbutton' type='button' value='Show paid IOU's.' onclick='toggleshowpaid(this);'></input>
 </form>
 </section>
 
@@ -61,7 +66,7 @@ I owe <input id="message" placeholder="Debt"></input> to
 		if (empty($totalcashowed[0]['sum'])) {
 			echo "<section class='record'><header>No one owes you any cash.</header>";
 		} else {
-			echo "<section class='record'><header>You are owed<strong>$".$totalcashowed[0]['sum']."</strong></header>";
+			echo "<section class='record'><header>You are owed <strong>$".$totalcashowed[0]['sum']."</strong></header>";
 		}
 		
 		if (sizeof($otherowed)==0 && empty($totalcashowed[0]['sum'])) {
@@ -101,7 +106,7 @@ I owe <input id="message" placeholder="Debt"></input> to
 			echo "</section>";
 		} else if (sizeof($otherindebted)>0) {
 			if (empty($totalcashiou[0]['sum'])) {
-				echo "But you owe";
+				echo "But you owe ";
 			} else {
 				echo "And you also owe ";
 			}
@@ -144,15 +149,30 @@ I owe <input id="message" placeholder="Debt"></input> to
 			echo "<section class='record'><header>You owe no one anything, and no one owes you!</header></section>";
 		}
 		foreach ($debts as $debt) {
-			echo "<section class='record'>";
+			echo "<section class='record";
+			if ($debt['paid']!='0000-00-00') {
+				echo " recorddone'>";
+			} else {
+				echo "'>";
+			}
 			echo "<header><strong>".stripcslashes(strip_tags($debt['from']))."</strong> owes <strong>".stripcslashes(strip_tags($debt['value']))."</strong> to <strong>".stripcslashes(strip_tags($debt['to']))."</strong>.</header>";
 			
 			$comments = $db->q("SELECT * FROM comments WHERE debtid=?","i",$debt['id']);
 			foreach ($comments as $comment) {
-				echo "<article><h1>".strip_tags($comment['author'])."</h1>";
-				echo "<p>".strip_tags($comment['comment'])."</p></article>";
+				echo "<article><h1>".strip_tags(stripcslashes($comment['author']))."</h1>";
+				echo "<p>".strip_tags(stripcslashes($comment['comment']))."</p></article>";
 			}
-			echo "</section>";
+			echo "<form name='commentbox' onsubmit='dashboardcomment(".$debt['id'].",this); return false;'>";
+			echo "<input id='comment' placeholder='Comment'></input>";
+			echo "<input id='submit' type='submit' value='Comment'></input>";
+			if ($debt['from_id']==$_SESSION['userid'] || $debt['to_id']==$_SESSION['userid']) {
+				if ($debt['paid']!='0000-00-00') {
+					echo "<input id='markundone' type='button' value='Mark Undone' onclick='markiouundone(".$debt['id'].",this);'></input>";
+				} else {
+					echo "<input id='markdone' name='".$debt['paid']."' type='button' value='Mark Done' onclick='markioudone(".$debt['id'].",this);'></input>";
+				}
+			}
+			echo "</form></section>";
 		}
 	} catch (Exception $e) {
 		echo "Sorry, there was an error.<br/>".$e->getMessage();
