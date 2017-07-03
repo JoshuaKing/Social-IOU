@@ -1,4 +1,4 @@
-ABOUT:
+# ABOUT
 This work allows users to add/receive IOU's from others regarding debt as either a monetary or non-monetary value.
 
 This is in its VERY EARLY STAGES.  Please note you will need to modify backend/mysqli.php to add username/password/database info.
